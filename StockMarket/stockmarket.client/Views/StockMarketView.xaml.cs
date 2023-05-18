@@ -7,9 +7,9 @@ namespace StockMarket.Client.Views
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class StockMarketView : Window
     {
-        public MainWindow()
+        public StockMarketView()
         {
             InitializeComponent();
         }

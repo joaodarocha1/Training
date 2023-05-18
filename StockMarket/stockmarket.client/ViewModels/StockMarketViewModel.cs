@@ -7,17 +7,17 @@ using AutoMapper;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
-using StockMarket.Domain;
+using StockMarket.Service.Common;
 
 namespace StockMarket.Client.ViewModels
 {
-    internal class MainWindowViewModel : BindableBase, IDisposable
+    internal class StockMarketViewModel : BindableBase, IDisposable
     {
         private readonly IMarketDataService _marketDataServices;
         private readonly IMapper _mapper;
         private readonly IDialogService _dialogService;
 
-        public MainWindowViewModel(IMarketDataService marketDataServices,  IMapper mapper, IDialogService dialogService)
+        public StockMarketViewModel(IMarketDataService marketDataServices,  IMapper mapper, IDialogService dialogService)
         {
             _marketDataServices = marketDataServices;
             _mapper = mapper;
@@ -92,8 +92,8 @@ namespace StockMarket.Client.ViewModels
 
             var stockData = new List<Stock>
             {
-                new Stock { Ticker = "STK1", Name = "Stock 1" },
-                new Stock { Ticker = "STK2", Name = "Stock 2" },
+                new() { Ticker = "STK1", Name = "Stock 1" },
+                new() { Ticker = "STK2", Name = "Stock 2" },
             };
 
             return stockData;

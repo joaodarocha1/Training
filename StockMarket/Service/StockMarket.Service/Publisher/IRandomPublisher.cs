@@ -1,6 +1,6 @@
-﻿using StockMarket.Domain;
+﻿using StockMarket.Service.Common;
 
-namespace StockMarket.Service.Publisher;
+namespace StockMarket.Service.Bloomberg.Publisher;
 
 public interface IRandomPublisher
 {

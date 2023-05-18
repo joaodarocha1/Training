@@ -5,11 +5,9 @@ VisualStudioVersion = 17.6.33712.159
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StockMarket.Client", "stockmarket.client\StockMarket.Client.csproj", "{10378BDF-CC97-4A1E-96C4-B0886EED2614}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{7D819EA8-9E9D-481B-9D36-9A8640EB0CF7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StockMarket.Service.Common", "StockMarket.Domain\StockMarket.Service.Common.csproj", "{340A9A13-76D8-43C9-9BB7-46D3D50163F1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StockMarket.Domain", "StockMarket.Domain\StockMarket.Domain.csproj", "{340A9A13-76D8-43C9-9BB7-46D3D50163F1}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StockMarket.Service", "Service\StockMarket.Service\StockMarket.Service.csproj", "{B4235A99-F9F5-4693-BBDE-DE4089E89934}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StockMarket.Service.Bloomberg", "Service\StockMarket.Service\StockMarket.Service.Bloomberg.csproj", "{B4235A99-F9F5-4693-BBDE-DE4089E89934}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,9 +30,6 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{340A9A13-76D8-43C9-9BB7-46D3D50163F1} = {7D819EA8-9E9D-481B-9D36-9A8640EB0CF7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {63B5678A-3602-40C8-A3F5-4A85A91D65FA}

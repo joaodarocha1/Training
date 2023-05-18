@@ -1,7 +1,7 @@
-﻿using StockMarket.Domain;
+﻿using StockMarket.Service.Common;
 using Timer = System.Timers.Timer;
 
-namespace StockMarket.Service.Publisher;
+namespace StockMarket.Service.Bloomberg.Publisher;
 
 public class RandomPublisher : IRandomPublisher, IDisposable
 {

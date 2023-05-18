@@ -1,7 +1,7 @@
 ﻿using System;
 using Prism.Mvvm;
-using StockMarket.Domain;
 using StockMarket.Service;
+using StockMarket.Service.Common;
 
 namespace StockMarket.Client.ViewModels;
 

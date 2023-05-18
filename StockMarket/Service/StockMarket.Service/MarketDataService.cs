@@ -1,19 +1,19 @@
 ﻿using System.Collections.Concurrent;
 using System.Timers;
-using StockMarket.Domain;
-using StockMarket.Service.Publisher;
+using StockMarket.Service.Bloomberg.Publisher;
+using StockMarket.Service.Common;
 
-namespace StockMarket.Service;
+namespace StockMarket.Service.Bloomberg;
 
-public class BloombergDataService : IMarketDataService
+public class MarketDataService : IMarketDataService
 {
     private readonly IRandomPublisher _randomPublisher;
     private readonly System.Timers.Timer _timer;
     private readonly ConcurrentBag<Quote> _priceHistory;
     private List<Quote> _subscribedTo;
-    public event EventHandler<Domain.TickEventArgs> Tick;
+    public event EventHandler<TickEventArgs> Tick;
 
-    public BloombergDataService(IRandomPublisher randomPublisher)
+    public MarketDataService(IRandomPublisher randomPublisher)
     {
         _randomPublisher = randomPublisher;
         _randomPublisher.Publish += OnPublish;
@@ -56,14 +56,12 @@ public class BloombergDataService : IMarketDataService
                 continue;
             }
 
-            if (oldPrice < currentPrice)
-            {
-                ticker.Movement = MovementType.Down;
-                continue;
-            }
+            if (oldPrice >= currentPrice) continue;
+
+            ticker.Movement = MovementType.Down;
         }
 
-        Tick?.Invoke(sender, new Domain.TickEventArgs()
+        Tick?.Invoke(sender, new TickEventArgs()
         {
             Quotes = _subscribedTo
         });
@@ -88,6 +86,6 @@ public class BloombergDataService : IMarketDataService
 
     public IEnumerable<IQuote> GetPriceHistory(string ticker, DateTime startDateTime, DateTime endDateTime)
     {
-        return _priceHistory.ToList();
+        return _priceHistory.Where(w => w.Ticker == ticker).ToList();
     }
 }

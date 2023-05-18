@@ -1,13 +1,13 @@
 ﻿using AutoMapper;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
-using StockMarket.Domain;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Data;
+using StockMarket.Service.Common;
 
 namespace StockMarket.Client.ViewModels
 {

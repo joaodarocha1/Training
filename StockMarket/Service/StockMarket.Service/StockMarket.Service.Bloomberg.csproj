@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\StockMarket.Domain\StockMarket.Domain.csproj" />
+    <ProjectReference Include="..\..\StockMarket.Domain\StockMarket.Service.Common.csproj" />
   </ItemGroup>
 
 </Project>
