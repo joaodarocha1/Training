@@ -1,0 +1,59 @@
+﻿<Window x:Class="StockMarket.Client.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:StockMarket"
+        xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:interactivity="http://prismlibrary.com/"
+        xmlns:service="clr-namespace:StockMarket.Service;assembly=StockMarket.Service"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <DataTemplate x:Key="PriceTemplate">
+            <TextBlock Text="{Binding Price, StringFormat=F2}" />
+        </DataTemplate>
+
+        <Style x:Key="DataGridRowStyle" TargetType="DataGridRow">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Movement}" Value="{x:Static service:MovementType.Up}">
+                    <Setter Property="Background" Value="Green"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Movement}" Value="{x:Static service:MovementType.Down}">
+                    <Setter Property="Background" Value="Red"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Movement}" Value="{x:Static service:MovementType.None}">
+                    <Setter Property="Background" Value="White"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+    <b:Interaction.Triggers>
+        <b:EventTrigger EventName="Loaded">
+            <interactivity:InvokeCommandAction Command="{Binding LoadCommand}"/>
+        </b:EventTrigger>
+    </b:Interaction.Triggers>
+    <Grid>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Button Grid.Row="0" Command="{Binding LoadCommand}" Content="Test" Height="40px" />
+            <DataGrid  RowStyle="{StaticResource DataGridRowStyle}" Grid.Row="1"  ItemsSource="{Binding Stocks}" AutoGenerateColumns="False">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Ticker" Binding="{Binding Ticker}" IsReadOnly="True" />
+                    <DataGridTextColumn Header="Stock" Binding="{Binding Name}" IsReadOnly="True" />
+                    <DataGridTextColumn Header="Date/Time" Binding="{Binding DateTime}" IsReadOnly="True" />
+                    <DataGridTemplateColumn Header="Price" CellTemplate="{StaticResource PriceTemplate}" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+        <Grid Background="#80000000" Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <TextBlock Text="Loading..." HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" />
+        </Grid>
+    </Grid>
+
+
+</Window>
