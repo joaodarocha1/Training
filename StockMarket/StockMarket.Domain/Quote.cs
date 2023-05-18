@@ -1,6 +1,4 @@
-﻿using StockMarket.Service;
-
-namespace StockMarket.Domain;
+﻿namespace StockMarket.Domain;
 
 public class Quote : IQuote
 {

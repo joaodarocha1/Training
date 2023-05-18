@@ -52,7 +52,7 @@ namespace StockMarket.Client.ViewModels
 
         private void ShowPriceHistoryExecute()
         {
-            if(string.IsNullOrEmpty(SelectedStock.Ticker)) return;
+            if(SelectedStock == null || string.IsNullOrEmpty(SelectedStock.Ticker)) return;
 
             var parameters = new DialogParameters
             {

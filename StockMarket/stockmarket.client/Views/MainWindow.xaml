@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:interactivity="http://prismlibrary.com/"
-        xmlns:service="clr-namespace:StockMarket.Service;assembly=StockMarket.Domain"
+        xmlns:domain="clr-namespace:StockMarket.Domain;assembly=StockMarket.Domain"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Window.Resources>
@@ -16,13 +16,13 @@
 
         <Style x:Key="DataGridRowStyle" TargetType="DataGridRow">
             <Style.Triggers>
-                <DataTrigger Binding="{Binding Movement}" Value="{x:Static service:MovementType.Up}">
+                <DataTrigger Binding="{Binding Movement}" Value="{x:Static domain:MovementType.Up}">
                     <Setter Property="Background" Value="Green"/>
                 </DataTrigger>
-                <DataTrigger Binding="{Binding Movement}" Value="{x:Static service:MovementType.Down}">
+                <DataTrigger Binding="{Binding Movement}" Value="{x:Static domain:MovementType.Down}">
                     <Setter Property="Background" Value="Red"/>
                 </DataTrigger>
-                <DataTrigger Binding="{Binding Movement}" Value="{x:Static service:MovementType.None}">
+                <DataTrigger Binding="{Binding Movement}" Value="{x:Static domain:MovementType.None}">
                     <Setter Property="Background" Value="White"/>
                 </DataTrigger>
             </Style.Triggers>
@@ -45,7 +45,7 @@
     </b:Interaction.Triggers>
     <Grid>
         <Grid>
-            
+
 
             <DataGrid  RowStyle="{StaticResource DataGridRowStyle}" SelectionMode="Single" SelectedItem="{Binding SelectedStock}"  ItemsSource="{Binding Stocks}" AutoGenerateColumns="False">
                 <b:Interaction.Triggers>

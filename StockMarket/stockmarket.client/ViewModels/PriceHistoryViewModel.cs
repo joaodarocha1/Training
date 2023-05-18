@@ -4,8 +4,10 @@ using Prism.Services.Dialogs;
 using StockMarket.Domain;
 using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
+using System.Windows.Data;
 
 namespace StockMarket.Client.ViewModels
 {
@@ -14,6 +16,10 @@ namespace StockMarket.Client.ViewModels
         private readonly IMarketDataService _marketDataService;
         private readonly IMapper _mapper;
         private bool _isLoading;
+
+        #region Properties
+
+        public string Title => "Price History";
 
         public string Ticker
         {
@@ -35,37 +41,50 @@ namespace StockMarket.Client.ViewModels
             get => _isLoading;
             set => SetProperty(ref _isLoading, value);
         }
+
+        #endregion
+
+        public ObservableCollection<QuoteViewModel> PriceHistory { get; set; } = new();
+
         public PriceHistoryViewModel(IMarketDataService marketDataService, IMapper mapper)
         {
+            IsLoading = true;
+
             _marketDataService = marketDataService;
             _marketDataService.Tick += OnMarketDataTick;
             _mapper = mapper;
+
+            PriceHistoryView = CollectionViewSource.GetDefaultView(PriceHistory);
+            PriceHistoryView.SortDescriptions.Add(new SortDescription("DateTime", ListSortDirection.Descending));
         }
+
+        public ICollectionView PriceHistoryView { get; set; }
 
         private void OnMarketDataTick(object? sender, TickEventArgs e)
         {
             IsLoading = true;
-
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                PriceHistory.Clear();
-            });
-
+            
             var history = _marketDataService.GetPriceHistory(Ticker, DateTime.Now, DateTime.Now);
 
             foreach (var quote in history.OrderByDescending(o => o.DateTime))
             {
-                Application.Current.Dispatcher.Invoke(() =>
+                var quoteViewModel = _mapper.Map<QuoteViewModel>(quote);
+
+                if (!PriceHistory.Contains(quoteViewModel))
                 {
-                    PriceHistory.Add(_mapper.Map<QuoteViewModel>(quote));
-                });
-                
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        PriceHistory.Add(quoteViewModel);
+                    });
+                }
+                else
+                {
+                    break;
+                }
             }
 
             IsLoading = false;
         }
-
-        public ObservableCollection<QuoteViewModel> PriceHistory { get; set; } = new();
 
         public bool CanCloseDialog()
         {
@@ -83,7 +102,6 @@ namespace StockMarket.Client.ViewModels
             Name = parameters.GetValue<string>("name");
         }
 
-        public string Title => "Price History";
         public event Action<IDialogResult>? RequestClose;
     }
 }

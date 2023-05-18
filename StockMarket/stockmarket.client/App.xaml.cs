@@ -35,7 +35,7 @@ namespace StockMarket.Client
                 cfg.AddProfile<MappingProfile>();
             });
 
-            IMapper mapper = configuration.CreateMapper();
+            var mapper = configuration.CreateMapper();
             containerRegistry.RegisterInstance(mapper);
         }
         

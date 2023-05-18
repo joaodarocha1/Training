@@ -24,7 +24,7 @@
                 <Run Text=" - " />
                 <Run FontWeight="Bold" Text="{Binding Name}" />
             </TextBlock>
-            <DataGrid  Grid.Row="1" SelectionMode="Single" ItemsSource="{Binding PriceHistory}" AutoGenerateColumns="False">
+            <DataGrid  Grid.Row="1" SelectionMode="Single" ItemsSource="{Binding PriceHistoryView}" AutoGenerateColumns="False">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Date/Time" Binding="{Binding DateTime, StringFormat='d MMM yyyy HH:mm:ss'}" IsReadOnly="True" />
                     <DataGridTextColumn Header="Price" Binding="{Binding Price, StringFormat=F2}" IsReadOnly="True" />
