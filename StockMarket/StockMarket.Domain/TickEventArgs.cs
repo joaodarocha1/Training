@@ -1,4 +1,4 @@
-﻿namespace StockMarket.Service
+﻿namespace StockMarket.Domain
 {
     public class TickEventArgs : EventArgs
     {

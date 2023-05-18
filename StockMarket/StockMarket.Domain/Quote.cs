@@ -1,6 +1,8 @@
-﻿namespace StockMarket.Service;
+﻿using StockMarket.Service;
 
-public class Quote
+namespace StockMarket.Domain;
+
+public class Quote : IQuote
 {
     public string Ticker { get; set; }
     public DateTime DateTime { get; set; }

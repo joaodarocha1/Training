@@ -3,10 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:StockMarket"
         xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:interactivity="http://prismlibrary.com/"
-        xmlns:service="clr-namespace:StockMarket.Service;assembly=StockMarket.Service"
+        xmlns:service="clr-namespace:StockMarket.Service;assembly=StockMarket.Domain"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Window.Resources>
@@ -27,6 +26,16 @@
                     <Setter Property="Background" Value="White"/>
                 </DataTrigger>
             </Style.Triggers>
+
+        </Style>
+        <Style TargetType="DataGridCell">
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="Transparent" />
+                    <Setter Property="BorderBrush" Value="Transparent" />
+                    <Setter Property="Foreground" Value="Black" />
+                </Trigger>
+            </Style.Triggers>
         </Style>
     </Window.Resources>
     <b:Interaction.Triggers>
@@ -36,12 +45,12 @@
     </b:Interaction.Triggers>
     <Grid>
         <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-            <Button Grid.Row="0" Command="{Binding LoadCommand}" Content="Test" Height="40px" />
-            <DataGrid  RowStyle="{StaticResource DataGridRowStyle}" Grid.Row="1"  ItemsSource="{Binding Stocks}" AutoGenerateColumns="False">
+            <DataGrid  RowStyle="{StaticResource DataGridRowStyle}" SelectionMode="Single" SelectedItem="{Binding SelectedStock}"  ItemsSource="{Binding Stocks}" AutoGenerateColumns="False">
+                <b:Interaction.Triggers>
+                    <b:EventTrigger EventName="MouseDoubleClick">
+                        <b:InvokeCommandAction Command="{Binding ShowPriceHistoryCommand}" CommandParameter="{Binding SelectedStock}"/>
+                    </b:EventTrigger>
+                </b:Interaction.Triggers>
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Ticker" Binding="{Binding Ticker}" IsReadOnly="True" />
                     <DataGridTextColumn Header="Stock" Binding="{Binding Name}" IsReadOnly="True" />

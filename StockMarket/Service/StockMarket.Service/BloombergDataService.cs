@@ -1,5 +1,7 @@
-﻿using System.Timers;
+﻿using System.Collections.Concurrent;
+using System.Timers;
 using StockMarket.Domain;
+using StockMarket.Service.Publisher;
 
 namespace StockMarket.Service;
 
@@ -7,16 +9,16 @@ public class BloombergDataService : IMarketDataService
 {
     private readonly IRandomPublisher _randomPublisher;
     private readonly System.Timers.Timer _timer;
-    private readonly List<Quote> _priceHistory;
+    private readonly ConcurrentBag<Quote> _priceHistory;
     private List<Quote> _subscribedTo;
-    public event EventHandler<TickEventArgs>? Tick;
+    public event EventHandler<Domain.TickEventArgs> Tick;
 
     public BloombergDataService(IRandomPublisher randomPublisher)
     {
         _randomPublisher = randomPublisher;
         _randomPublisher.Publish += OnPublish;
 
-        _priceHistory = new List<Quote>();
+        _priceHistory = new ConcurrentBag<Quote>();
         _timer = new System.Timers.Timer(1000);
         _timer.Elapsed += TimerElapsed;
     }
@@ -32,7 +34,8 @@ public class BloombergDataService : IMarketDataService
 
         foreach (var ticker in _subscribedTo)
         {
-            var last = _priceHistory.LastOrDefault(w => w.Ticker == ticker.Ticker);
+            var last = _priceHistory.OrderBy(o=>o.DateTime).LastOrDefault(w => w.Ticker == ticker.Ticker);
+
             if (last == null) continue;
 
             var currentPrice = last.Price;
@@ -60,7 +63,7 @@ public class BloombergDataService : IMarketDataService
             }
         }
 
-        Tick?.Invoke(sender, new TickEventArgs()
+        Tick?.Invoke(sender, new Domain.TickEventArgs()
         {
             Quotes = _subscribedTo
         });
@@ -75,5 +78,16 @@ public class BloombergDataService : IMarketDataService
         _timer.Start();
     }
 
+    public void Unsubscribe()
+    {
+        _timer.Stop();
+        _randomPublisher.Publish -= OnPublish;
+        _timer.Elapsed -= TimerElapsed;
+        _randomPublisher.UnSubscribe();
+    }
 
+    public IEnumerable<IQuote> GetPriceHistory(string ticker, DateTime startDateTime, DateTime endDateTime)
+    {
+        return _priceHistory.ToList();
+    }
 }

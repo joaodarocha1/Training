@@ -1,12 +1,13 @@
-﻿using System.ComponentModel;
-using System.Configuration;
-using System.Windows;
-using Microsoft.Practices.Unity.Configuration;
+﻿using System.Windows;
+using AutoMapper;
 using Prism.Ioc;
 using Prism.Unity;
+using StockMarket.Client.Control;
+using StockMarket.Client.ViewModels;
 using StockMarket.Client.Views;
 using StockMarket.Domain;
 using StockMarket.Service;
+using StockMarket.Service.Publisher;
 
 namespace StockMarket.Client
 {
@@ -24,9 +25,29 @@ namespace StockMarket.Client
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
-            containerRegistry.Register<IMarketDataService, BloombergDataService>();
-            containerRegistry.Register<IPortfolioService, PortfolioService>();
+            containerRegistry.RegisterScoped<IMarketDataService, BloombergDataService>();
             containerRegistry.Register<IRandomPublisher, RandomPublisher>();
+
+            containerRegistry.RegisterDialog<PriceHistoryDialog, PriceHistoryViewModel>();
+
+            var configuration = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile<MappingProfile>();
+            });
+
+            IMapper mapper = configuration.CreateMapper();
+            containerRegistry.RegisterInstance(mapper);
+        }
+        
+    }
+
+    public class MappingProfile : Profile
+    {
+        public MappingProfile()
+        {
+            CreateMap<Stock, StockViewModel> ();
+            CreateMap<Quote, StockViewModel> ();
+            CreateMap<Quote, QuoteViewModel> ();
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System;
+using System.ComponentModel;
+using System.Windows;
 
 namespace StockMarket.Client.Views
 {
@@ -10,6 +12,13 @@ namespace StockMarket.Client.Views
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            base.OnClosing(e);
+            var viewModel = (IDisposable)this.DataContext;
+            viewModel.Dispose();
         }
     }
 }
