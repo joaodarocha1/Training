@@ -45,6 +45,8 @@
     </b:Interaction.Triggers>
     <Grid>
         <Grid>
+            
+
             <DataGrid  RowStyle="{StaticResource DataGridRowStyle}" SelectionMode="Single" SelectedItem="{Binding SelectedStock}"  ItemsSource="{Binding Stocks}" AutoGenerateColumns="False">
                 <b:Interaction.Triggers>
                     <b:EventTrigger EventName="MouseDoubleClick">

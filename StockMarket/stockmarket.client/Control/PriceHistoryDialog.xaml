@@ -18,6 +18,12 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" Padding="5">
+                <Run Text="Price history: " />
+                <Run FontWeight="Bold" Text="{Binding Ticker}" />
+                <Run Text=" - " />
+                <Run FontWeight="Bold" Text="{Binding Name}" />
+            </TextBlock>
             <DataGrid  Grid.Row="1" SelectionMode="Single" ItemsSource="{Binding PriceHistory}" AutoGenerateColumns="False">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Date/Time" Binding="{Binding DateTime, StringFormat='d MMM yyyy HH:mm:ss'}" IsReadOnly="True" />

@@ -1,16 +1,10 @@
 ﻿using AutoMapper;
-using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
 using StockMarket.Domain;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Net.Mime;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace StockMarket.Client.ViewModels
@@ -20,7 +14,21 @@ namespace StockMarket.Client.ViewModels
         private readonly IMarketDataService _marketDataService;
         private readonly IMapper _mapper;
         private bool _isLoading;
+
+        public string Ticker
+        {
+            get => _ticker;
+            set => SetProperty(ref _ticker, value);
+        }
+
+        private string _name;
         private string _ticker;
+
+        public string Name  
+        {
+            get => _name;
+            set => SetProperty(ref _name, value);
+        }
 
         public bool IsLoading
         {
@@ -43,7 +51,7 @@ namespace StockMarket.Client.ViewModels
                 PriceHistory.Clear();
             });
 
-            var history = _marketDataService.GetPriceHistory(_ticker, DateTime.Now, DateTime.Now);
+            var history = _marketDataService.GetPriceHistory(Ticker, DateTime.Now, DateTime.Now);
 
             foreach (var quote in history.OrderByDescending(o => o.DateTime))
             {
@@ -62,7 +70,6 @@ namespace StockMarket.Client.ViewModels
         public bool CanCloseDialog()
         {
             return true;
-           // throw new NotImplementedException();
         }
 
         public void OnDialogClosed()
@@ -72,10 +79,11 @@ namespace StockMarket.Client.ViewModels
 
         public void OnDialogOpened(IDialogParameters parameters)
         {
-            _ticker = parameters.GetValue<string>("ticker");
+            Ticker = parameters.GetValue<string>("ticker");
+            Name = parameters.GetValue<string>("name");
         }
 
-        public string Title { get => "Price History"; }
+        public string Title => "Price History";
         public event Action<IDialogResult>? RequestClose;
     }
 }

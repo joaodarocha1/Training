@@ -19,10 +19,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Converters\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Service\StockMarket.Service\StockMarket.Service.csproj" />
     <ProjectReference Include="..\StockMarket.Domain\StockMarket.Domain.csproj" />
   </ItemGroup>

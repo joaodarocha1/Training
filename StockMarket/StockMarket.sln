@@ -7,11 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StockMarket.Client", "stock
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{7D819EA8-9E9D-481B-9D36-9A8640EB0CF7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockMarket.Domain", "StockMarket.Domain\StockMarket.Domain.csproj", "{340A9A13-76D8-43C9-9BB7-46D3D50163F1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StockMarket.Domain", "StockMarket.Domain\StockMarket.Domain.csproj", "{340A9A13-76D8-43C9-9BB7-46D3D50163F1}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Service", "Service", "{909B0C37-FB55-4062-BC90-5D607FCBC8DD}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockMarket.Service", "Service\StockMarket.Service\StockMarket.Service.csproj", "{B4235A99-F9F5-4693-BBDE-DE4089E89934}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StockMarket.Service", "Service\StockMarket.Service\StockMarket.Service.csproj", "{B4235A99-F9F5-4693-BBDE-DE4089E89934}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

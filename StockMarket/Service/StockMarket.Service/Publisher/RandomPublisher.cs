@@ -1,4 +1,5 @@
 ﻿using StockMarket.Domain;
+using Timer = System.Timers.Timer;
 
 namespace StockMarket.Service.Publisher;
 
@@ -23,37 +24,35 @@ public class RandomPublisher : IRandomPublisher, IDisposable
 
     private void Timer1Elapsed(object? sender, System.Timers.ElapsedEventArgs e)
     {
-        var sconds = _random.Next(1, 4);
-        _timer1.Interval = sconds * 1000;
+        PublishRandomEvent(_timer1, sender, _stk1);
+    }
 
-        _stk1.LastChange = DateTime.Now;
+    private void PublishRandomEvent(Timer timer, object? sender, (string Ticker, decimal MinPrice, decimal MaxPrice, DateTime LastChange) stk)
+    {
+
+        SetRandomInterval(timer);
+        
+        stk.LastChange = DateTime.Now;
         Publish.Invoke(sender, new RamdomPublishEventArgs()
         {
             Quote = new Quote()
             {
                 DateTime = DateTime.Now,
-                Price = NextDecimal(_stk1.MinPrice, _stk1.MaxPrice),
-                Ticker = _stk1.Ticker
+                Price = NextDecimal(stk.MinPrice, stk.MaxPrice),
+                Ticker = stk.Ticker
             }
         });
-
     }
 
     private void Timer2Elapsed(object? sender, System.Timers.ElapsedEventArgs e)
     {
-        var sconds = _random.Next(1, 4);
-        _timer2.Interval = sconds * 1000;
+        PublishRandomEvent(_timer2, sender, _stk2);
+    }
 
-        _stk2.LastChange = DateTime.Now;
-        Publish.Invoke(sender, new RamdomPublishEventArgs()
-        {
-            Quote = new Quote()
-            {
-                DateTime = DateTime.Now,
-                Price = NextDecimal(_stk2.MinPrice, _stk2.MaxPrice),
-                Ticker = _stk2.Ticker
-            }
-        });
+    private void SetRandomInterval(System.Timers.Timer timer)
+    {
+        var sconds = _random.Next(1, 4);
+        timer.Interval = sconds * 1000;
     }
 
     private decimal NextDecimal(decimal minValue, decimal maxValue)

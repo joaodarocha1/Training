@@ -8,7 +8,6 @@ using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
 using StockMarket.Domain;
-using StockMarket.Service;
 
 namespace StockMarket.Client.ViewModels
 {
@@ -53,9 +52,15 @@ namespace StockMarket.Client.ViewModels
 
         private void ShowPriceHistoryExecute()
         {
-            if(SelectedStock == null) return;
+            if(string.IsNullOrEmpty(SelectedStock.Ticker)) return;
 
-            _dialogService.ShowDialog("PriceHistoryDialog", new DialogParameters($"ticker={SelectedStock.Ticker}"), r => {});
+            var parameters = new DialogParameters
+            {
+                { "ticker", SelectedStock.Ticker },
+                { "name", SelectedStock.Name }
+            };
+
+            _dialogService.ShowDialog("PriceHistoryDialog", parameters, r => {});
          }
 
         private void CommandLoadExecute()
@@ -101,7 +106,6 @@ namespace StockMarket.Client.ViewModels
                 var stock = Stocks.SingleOrDefault(s => s.Ticker == eQuote.Ticker);
 
                 if (stock == null) continue;
-
                 _mapper.Map(eQuote, stock);
 
             }
