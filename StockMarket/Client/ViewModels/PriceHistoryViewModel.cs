@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Data;
+using Serilog;
 using StockMarket.Client.Utils;
 using StockMarket.Service.Common.Event;
 using StockMarket.Service.Common.Services;
@@ -19,6 +20,7 @@ namespace StockMarket.Client.ViewModels
         private readonly IMarketDataService _marketDataService;
         private readonly IMapper _mapper;
         private readonly IDispatcherService _dispatcherService;
+        private readonly ILogger _logger;
         private bool _isLoading;
         private string _name;
         private string _ticker;
@@ -59,32 +61,47 @@ namespace StockMarket.Client.ViewModels
         #endregion
 
         #region Methods
-        public PriceHistoryViewModel(IMarketDataService marketDataService, IMapper mapper, IDispatcherService dispatcherService)
+        public PriceHistoryViewModel(IMarketDataService marketDataService, IMapper mapper, IDispatcherService dispatcherService, ILogger logger)
         {
+            logger.Debug("PriceHistoryViewModel Initialization started");
+
             IsLoading = true;
 
             _marketDataService = marketDataService;
             _marketDataService.Tick += OnMarketDataTick;
             _mapper = mapper;
             _dispatcherService = dispatcherService;
+            _logger = logger;
 
             PriceHistoryView = CollectionViewSource.GetDefaultView(PriceHistory);
             PriceHistoryView.SortDescriptions.Add(new SortDescription("DateTime", ListSortDirection.Descending));
+
+            logger.Debug("PriceHistoryViewModel Initialization completed");
         }
         
         private void OnMarketDataTick(object? sender, TickEventArgs e)
         {
             IsLoading = true;
-            
-            var history = _marketDataService.GetPriceHistory(Ticker);
 
-            foreach (var quote in history.OrderByDescending(o => o.DateTime))
+            try
             {
-                var quoteViewModel = _mapper.Map<QuoteViewModel>(quote);
+                var history = _marketDataService.GetPriceHistory(Ticker);
 
-                if (PriceHistory.Contains(quoteViewModel)) break;
+                foreach (var quote in history.OrderByDescending(o => o.DateTime))
+                {
+                    var quoteViewModel = _mapper.Map<QuoteViewModel>(quote);
 
-                _dispatcherService.Invoke(() => { PriceHistory.Add(quoteViewModel); });
+                    if (PriceHistory.Contains(quoteViewModel)) break;
+
+                    _dispatcherService.Invoke(() => { PriceHistory.Add(quoteViewModel); });
+                }
+
+            }
+            catch (Exception exception)
+            {
+                _logger.Error("PriceHistoryViewModel.OnMarketDataTick", exception);
+                IsLoading = false;
+                throw;
             }
 
             IsLoading = false;

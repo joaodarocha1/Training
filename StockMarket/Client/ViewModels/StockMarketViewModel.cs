@@ -7,6 +7,7 @@ using AutoMapper;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
+using Serilog;
 using StockMarket.Service.Common;
 using StockMarket.Service.Common.Event;
 using StockMarket.Service.Common.Services;
@@ -20,6 +21,7 @@ namespace StockMarket.Client.ViewModels
         private readonly IMarketDataService _marketDataServices;
         private readonly IMapper _mapper;
         private readonly IDialogService _dialogService;
+        private readonly ILogger _logger;
 
         private DelegateCommand? _loadCommand;
         private DelegateCommand? _showPriceHistoryCommand;
@@ -30,13 +32,18 @@ namespace StockMarket.Client.ViewModels
 
         #region Constructors
 
-        public StockMarketViewModel(IMarketDataService marketDataServices, IMapper mapper, IDialogService dialogService)
+        public StockMarketViewModel(IMarketDataService marketDataServices, IMapper mapper, IDialogService dialogService, ILogger logger)
         {
+            logger.Debug("StockMarketViewModel initialization started");
+
             _marketDataServices = marketDataServices;
             _mapper = mapper;
             _dialogService = dialogService;
+            _logger = logger;
 
             _marketDataServices.Tick += OnTick;
+
+            logger.Debug("StockMarketViewModel initialization finished");
         }
 
         #endregion
@@ -92,18 +99,27 @@ namespace StockMarket.Client.ViewModels
 
         private async void LoadStocksAsync()
         {
-            IsLoading = true;
-
-            var portFolio = await GetPortfolioAsync();
-
-            await _marketDataServices.SubscribeAsync(portFolio.Select(s => s.Ticker));
-
-            foreach (var stockItem in portFolio)
+            try
             {
-                Stocks.Add(_mapper.Map<StockViewModel>(stockItem));
-            }
+                IsLoading = true;
 
-            IsLoading = false;
+                var portFolio = await GetPortfolioAsync();
+
+                await _marketDataServices.SubscribeAsync(portFolio.Select(s => s.Ticker));
+
+                foreach (var stockItem in portFolio)
+                {
+                    Stocks.Add(_mapper.Map<StockViewModel>(stockItem));
+                }
+
+                IsLoading = false;
+            }
+            catch (Exception e)
+            {
+                _logger.Error("Error while Loading Stocks", e);
+                IsLoading = false;
+                throw;
+            }
         }
 
         private async Task<IEnumerable<Stock>> GetPortfolioAsync()
@@ -119,12 +135,22 @@ namespace StockMarket.Client.ViewModels
 
         private void OnTick(object? sender, TickEventArgs e)
         {
-            foreach (var eQuote in e.Quotes.Where(w => w != null))
-            {
-                var stock = Stocks.SingleOrDefault(s => s.Ticker == eQuote.Ticker);
+            _logger.Debug($"StockMarketViewModel.OnTick: {string.Join(",", e.Quotes)}");
 
-                if (stock == null) continue;
-                _mapper.Map(eQuote, stock);
+            try
+            {
+                foreach (var eQuote in e.Quotes.Where(w => w != null))
+                {
+                    var stock = Stocks.SingleOrDefault(s => s.Ticker == eQuote.Ticker);
+
+                    if (stock == null) continue;
+                    _mapper.Map(eQuote, stock);
+                }
+            }
+            catch (Exception exception)
+            {
+                _logger.Error("Error while refreshing prices", exception);
+                throw;
             }
         }
 

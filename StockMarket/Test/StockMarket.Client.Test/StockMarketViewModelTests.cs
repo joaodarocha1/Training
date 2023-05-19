@@ -15,7 +15,7 @@ public class StockMarketViewModelTests : BaseViewModelTests
     [Fact]
     private void InitializationTest()
     {
-        var viewModel = new StockMarketViewModel(DataService,Mapper,new DialogService(new UnityContainerExtension()));
+        var viewModel = new StockMarketViewModel(DataService,Mapper,new DialogService(new UnityContainerExtension()), Logger.Object);
 
         using (new AssertionScope())
         {
@@ -26,7 +26,7 @@ public class StockMarketViewModelTests : BaseViewModelTests
     [Fact]
     private async Task Load_Stocks_Should_Be_Successfully()
     {
-        var viewModel = new StockMarketViewModel(DataService, Mapper, new DialogService(new UnityContainerExtension()));
+        var viewModel = new StockMarketViewModel(DataService, Mapper, new DialogService(new UnityContainerExtension()), Logger.Object);
         
         viewModel.LoadCommand.Execute();
 
@@ -43,7 +43,7 @@ public class StockMarketViewModelTests : BaseViewModelTests
     private async Task DataService_Tick_Should_Update_Price()
     {
         var viewModelTicker = "STK1";
-        var viewModel = new StockMarketViewModel(DataService, Mapper, new DialogService(new UnityContainerExtension()));
+        var viewModel = new StockMarketViewModel(DataService, Mapper, new DialogService(new UnityContainerExtension()), Logger.Object);
 
         viewModel.LoadCommand.Execute();
 

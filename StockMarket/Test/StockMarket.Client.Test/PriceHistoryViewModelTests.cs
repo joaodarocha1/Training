@@ -22,7 +22,7 @@ namespace StockMarket.Client.Test
         [Fact]
         public void InitializationTest()
         {
-            var viewModel = new PriceHistoryViewModel(DataService, Mapper, DispatcherServiceMock.Object);
+            var viewModel = new PriceHistoryViewModel(DataService, Mapper, DispatcherServiceMock.Object, Logger.Object);
 
             using (new AssertionScope())
             {
@@ -35,7 +35,7 @@ namespace StockMarket.Client.Test
         [Fact]
         public void Initial_Parameters_Must_Be_Set()
         {
-            var viewModel = new PriceHistoryViewModel(DataService, Mapper, DispatcherServiceMock.Object);
+            var viewModel = new PriceHistoryViewModel(DataService, Mapper, DispatcherServiceMock.Object, Logger.Object);
             var parameters = new DialogParameters
             {
                 { "ticker", "STK1" },
@@ -55,7 +55,7 @@ namespace StockMarket.Client.Test
 
             DataService.SubscribeAsync(new [] { viewModelTicker });
 
-            var viewModel = new PriceHistoryViewModel(DataService, Mapper, DispatcherServiceMock.Object)
+            var viewModel = new PriceHistoryViewModel(DataService, Mapper, DispatcherServiceMock.Object, Logger.Object)
                 {
                     Ticker = viewModelTicker,
                     PriceHistory = new ObservableCollection<QuoteViewModel>()
