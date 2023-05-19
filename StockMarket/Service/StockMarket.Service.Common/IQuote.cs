@@ -1,4 +1,6 @@
-﻿namespace StockMarket.Service.Common;
+﻿using StockMarket.Service.Common.Enums;
+
+namespace StockMarket.Service.Common;
 
 public interface IQuote
 {

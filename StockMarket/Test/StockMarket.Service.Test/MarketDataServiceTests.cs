@@ -5,6 +5,8 @@ using StockMarket.Service.Common;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Serilog;
+using StockMarket.Service.Common.Event;
+using StockMarket.Service.Common.Enums;
 
 namespace StockMarket.Service.Bloomberg.Test
 {

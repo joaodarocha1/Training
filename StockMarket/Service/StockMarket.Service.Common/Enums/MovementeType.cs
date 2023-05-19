@@ -1,4 +1,4 @@
-﻿namespace StockMarket.Service.Common;
+﻿namespace StockMarket.Service.Common.Enums;
 
 public enum MovementType
 {

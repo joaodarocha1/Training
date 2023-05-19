@@ -1,4 +1,6 @@
-﻿namespace StockMarket.Service.Common;
+﻿using StockMarket.Service.Common.Event;
+
+namespace StockMarket.Service.Common.Services;
 
 public interface IMarketDataService
 {

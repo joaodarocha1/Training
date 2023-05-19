@@ -8,6 +8,8 @@ using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
 using StockMarket.Service.Common;
+using StockMarket.Service.Common.Event;
+using StockMarket.Service.Common.Services;
 
 namespace StockMarket.Client.ViewModels
 {
@@ -107,14 +109,12 @@ namespace StockMarket.Client.ViewModels
         private async Task<IEnumerable<Stock>> GetPortfolioAsync()
         {
             await Task.Delay(2000);
-
-            var stockData = new List<Stock>
+            
+            return new List<Stock>
             {
                 new() { Ticker = "STK1", Name = "Stock 1" },
                 new() { Ticker = "STK2", Name = "Stock 2" },
-            };
-
-            return stockData;
+            }; ;
         }
 
         private void OnTick(object? sender, TickEventArgs e)

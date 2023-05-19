@@ -12,7 +12,7 @@ using StockMarket.Client.Views;
 using StockMarket.Service;
 using StockMarket.Service.Bloomberg;
 using StockMarket.Service.Bloomberg.Publisher;
-using StockMarket.Service.Common;
+using StockMarket.Service.Common.Services;
 using Unity;
 
 namespace StockMarket.Client

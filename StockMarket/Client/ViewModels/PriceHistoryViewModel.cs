@@ -6,8 +6,9 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Data;
-using StockMarket.Service.Common;
 using StockMarket.Client.Utils;
+using StockMarket.Service.Common.Event;
+using StockMarket.Service.Common.Services;
 
 namespace StockMarket.Client.ViewModels
 {

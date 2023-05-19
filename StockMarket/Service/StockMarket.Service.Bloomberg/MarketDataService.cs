@@ -5,6 +5,9 @@ using Serilog;
 using Serilog.Core;
 using StockMarket.Service.Bloomberg.Publisher;
 using StockMarket.Service.Common;
+using StockMarket.Service.Common.Enums;
+using StockMarket.Service.Common.Event;
+using StockMarket.Service.Common.Services;
 
 namespace StockMarket.Service.Bloomberg;
 

@@ -5,6 +5,7 @@ using Prism.Unity;
 using StockMarket.Client.ViewModels;
 using StockMarket.Service.Bloomberg.Publisher;
 using StockMarket.Service.Common;
+using StockMarket.Service.Common.Enums;
 using System.Collections.ObjectModel;
 
 namespace StockMarket.Client.Test;
