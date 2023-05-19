@@ -1,6 +1,8 @@
 ﻿using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Timers;
+using Serilog;
+using Serilog.Core;
 using StockMarket.Service.Bloomberg.Publisher;
 using StockMarket.Service.Common;
 
@@ -9,13 +11,18 @@ namespace StockMarket.Service.Bloomberg;
 public class MarketDataService : IMarketDataService, IDisposable
 {
     private readonly IRandomPublisher _randomPublisher;
+    private readonly ILogger _logger;
     private readonly System.Timers.Timer _timer;
     private readonly ConcurrentBag<Quote> _priceHistory;
     private readonly ConcurrentDictionary<string, Quote?> _subscribedTo = new();
     public event EventHandler<TickEventArgs>? Tick;
 
-    public MarketDataService(IRandomPublisher randomPublisher)
+    public MarketDataService(IRandomPublisher randomPublisher, ILogger logger)
     {
+        _logger = logger;
+
+        _logger.Information("Initializing MarkedDataService");
+
         _randomPublisher = randomPublisher;
         _randomPublisher.Publish += OnPublish;
 
@@ -24,10 +31,13 @@ public class MarketDataService : IMarketDataService, IDisposable
         _timer.Elapsed += TimerElapsed;
 
         _timer.Start();
+
+        _logger.Information("MarkedDataService Initialization completed");
     }
 
     private void OnPublish(object? sender, RandomPublishEventArgs e)
     {
+        _logger.Debug($"MarketDataService.OnPublish: Ticker: {e.Quote.Ticker}, Price: {e.Quote.Price}");
         _priceHistory.Add(e.Quote);
     }
 
@@ -48,22 +58,23 @@ public class MarketDataService : IMarketDataService, IDisposable
                     DateTime = last.DateTime,
                     Movement = MovementType.None
                 };
-
-                return;
             }
-            
-            var oldPrice = subscription.Value.Price;
-            
-            subscription.Value.Price = last.Price;
-            subscription.Value.DateTime = last.DateTime;
-
-            subscription.Value.Movement = oldPrice switch
+            else
             {
-                _ when oldPrice == last.Price => MovementType.None,
-                _ when oldPrice < last.Price => MovementType.Up,
-                _ when oldPrice > last.Price => MovementType.Down,
-                _ => throw new InvalidOperationException("Unexpected condition") 
-            };
+                var oldPrice = subscription.Value.Price;
+
+                subscription.Value.Price = last.Price;
+                subscription.Value.DateTime = last.DateTime;
+
+                subscription.Value.Movement = oldPrice switch
+                {
+                    _ when oldPrice == last.Price => MovementType.None,
+                    _ when oldPrice < last.Price => MovementType.Up,
+                    _ when oldPrice > last.Price => MovementType.Down,
+                    _ => throw new InvalidOperationException("Unexpected condition")
+                };
+
+            }
 
         }
 
@@ -73,14 +84,26 @@ public class MarketDataService : IMarketDataService, IDisposable
         });
     }
 
-    public void Subscribe(IEnumerable<string> tickers)
+    public async Task SubscribeAsync(IEnumerable<string> tickers)
     {
-        foreach (var ticker in tickers)
+        _logger.Information($"Subscribing to: {string.Join(",", tickers)}");
+
+        try
         {
-            _subscribedTo[ticker] = null;
+            foreach (var ticker in tickers)
+            {
+                _subscribedTo[ticker] = null;
+            }
+
+            await _randomPublisher.SubscribeAsync(tickers);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Error while subscribing to: {string.Join(",", tickers)}", ex);
+            throw;
         }
         
-        _randomPublisher.Subscribe(tickers);
+        _logger.Information($"Successfully subscribed to: {string.Join(",", tickers)}");
     }
 
     public void Unsubscribe()

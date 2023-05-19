@@ -3,7 +3,7 @@ using System;
 
 namespace StockMarket.Client.ViewModels;
 
-internal class QuoteViewModel : BindableBase, IEquatable<QuoteViewModel>
+public class QuoteViewModel : BindableBase, IEquatable<QuoteViewModel>
 {
     private DateTime _dateTime;
     private decimal _price;

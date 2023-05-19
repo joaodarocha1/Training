@@ -6,6 +6,7 @@ using Prism.Unity;
 using Serilog;
 using Serilog.Core;
 using StockMarket.Client.Control;
+using StockMarket.Client.Utils;
 using StockMarket.Client.ViewModels;
 using StockMarket.Client.Views;
 using StockMarket.Service;
@@ -34,6 +35,7 @@ namespace StockMarket.Client
             containerRegistry.RegisterScoped<IMarketDataService, MarketDataService>();
             containerRegistry.Register<IRandomPublisher, RandomPublisher>();
             containerRegistry.RegisterDialog<PriceHistoryDialog, PriceHistoryViewModel>();
+            containerRegistry.Register<IDispatcherService, DispatcherService>();
 
             AddMapper(containerRegistry);
             AddLogger(containerRegistry);

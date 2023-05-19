@@ -11,13 +11,24 @@ using StockMarket.Service.Common;
 
 namespace StockMarket.Client.ViewModels
 {
-    internal class StockMarketViewModel : BindableBase, IDisposable
+    public class StockMarketViewModel : BindableBase, IDisposable
     {
+        #region Fields
+
         private readonly IMarketDataService _marketDataServices;
         private readonly IMapper _mapper;
         private readonly IDialogService _dialogService;
 
-        public StockMarketViewModel(IMarketDataService marketDataServices,  IMapper mapper, IDialogService dialogService)
+        private DelegateCommand? _loadCommand;
+        private DelegateCommand? _showPriceHistoryCommand;
+        private bool _isLoading;
+        private StockViewModel _selectedStock;
+
+        #endregion
+
+        #region Constructors
+
+        public StockMarketViewModel(IMarketDataService marketDataServices, IMapper mapper, IDialogService dialogService)
         {
             _marketDataServices = marketDataServices;
             _mapper = mapper;
@@ -26,13 +37,17 @@ namespace StockMarket.Client.ViewModels
             _marketDataServices.Tick += OnTick;
         }
 
+        #endregion
+
+        #region Properties
+
         public bool IsLoading
         {
             get => _isLoading;
             set => SetProperty(ref _isLoading, value);
         }
 
-        public StockViewModel SelectedStock 
+        public StockViewModel SelectedStock
         {
             get => _selectedStock;
             set => SetProperty(ref _selectedStock, value);
@@ -40,19 +55,19 @@ namespace StockMarket.Client.ViewModels
 
         public ObservableCollection<StockViewModel> Stocks { get; set; } = new();
 
-        private DelegateCommand? _loadCommand;
-        private DelegateCommand? _showPriceHistoryCommand;
-        private bool _isLoading;
-        private StockViewModel _selectedStock;
-
         public DelegateCommand LoadCommand =>
             _loadCommand ??= new DelegateCommand(CommandLoadExecute);
+
         public DelegateCommand ShowPriceHistoryCommand =>
             _showPriceHistoryCommand ??= new DelegateCommand(ShowPriceHistoryExecute);
 
+        #endregion
+
+        #region Commands
+
         private void ShowPriceHistoryExecute()
         {
-            if(SelectedStock == null || string.IsNullOrEmpty(SelectedStock.Ticker)) return;
+            if (SelectedStock == null || string.IsNullOrEmpty(SelectedStock.Ticker)) return;
 
             var parameters = new DialogParameters
             {
@@ -60,8 +75,8 @@ namespace StockMarket.Client.ViewModels
                 { "name", SelectedStock.Name }
             };
 
-            _dialogService.ShowDialog("PriceHistoryDialog", parameters, r => {});
-         }
+            _dialogService.ShowDialog("PriceHistoryDialog", parameters, r => { });
+        }
 
         private void CommandLoadExecute()
         {
@@ -69,14 +84,17 @@ namespace StockMarket.Client.ViewModels
             LoadStocksAsync();
         }
 
+        #endregion
+
+        #region Methods
 
         private async void LoadStocksAsync()
         {
             IsLoading = true;
-            
+
             var portFolio = await GetPortfolioAsync();
 
-            _marketDataServices.Subscribe(portFolio.Select(s => s.Ticker));
+            await _marketDataServices.SubscribeAsync(portFolio.Select(s => s.Ticker));
 
             foreach (var stockItem in portFolio)
             {
@@ -110,10 +128,17 @@ namespace StockMarket.Client.ViewModels
             }
         }
 
+        #endregion
+
+        #region Dispose
+
         public void Dispose()
         {
             _marketDataServices.Tick -= OnTick;
             _marketDataServices.Unsubscribe();
         }
+
+        #endregion
     }
 }
+

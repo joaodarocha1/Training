@@ -5,17 +5,24 @@ using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Windows;
 using System.Windows.Data;
 using StockMarket.Service.Common;
+using StockMarket.Client.Utils;
 
 namespace StockMarket.Client.ViewModels
 {
-    class PriceHistoryViewModel : BindableBase, IDialogAware
+    public class PriceHistoryViewModel : BindableBase, IDialogAware
     {
+        #region Fields
+
         private readonly IMarketDataService _marketDataService;
         private readonly IMapper _mapper;
+        private readonly IDispatcherService _dispatcherService;
         private bool _isLoading;
+        private string _name;
+        private string _ticker;
+
+        #endregion
 
         #region Properties
 
@@ -27,8 +34,6 @@ namespace StockMarket.Client.ViewModels
             set => SetProperty(ref _ticker, value);
         }
 
-        private string _name;
-        private string _ticker;
 
         public string Name  
         {
@@ -41,25 +46,31 @@ namespace StockMarket.Client.ViewModels
             get => _isLoading;
             set => SetProperty(ref _isLoading, value);
         }
+        public ObservableCollection<QuoteViewModel> PriceHistory { get; set; } = new();
+        public ICollectionView PriceHistoryView { get; set; }
 
         #endregion
 
-        public ObservableCollection<QuoteViewModel> PriceHistory { get; set; } = new();
+        #region Events
 
-        public PriceHistoryViewModel(IMarketDataService marketDataService, IMapper mapper)
+        public event Action<IDialogResult>? RequestClose;
+
+        #endregion
+
+        #region Methods
+        public PriceHistoryViewModel(IMarketDataService marketDataService, IMapper mapper, IDispatcherService dispatcherService)
         {
             IsLoading = true;
 
             _marketDataService = marketDataService;
             _marketDataService.Tick += OnMarketDataTick;
             _mapper = mapper;
+            _dispatcherService = dispatcherService;
 
             PriceHistoryView = CollectionViewSource.GetDefaultView(PriceHistory);
             PriceHistoryView.SortDescriptions.Add(new SortDescription("DateTime", ListSortDirection.Descending));
         }
-
-        public ICollectionView PriceHistoryView { get; set; }
-
+        
         private void OnMarketDataTick(object? sender, TickEventArgs e)
         {
             IsLoading = true;
@@ -72,7 +83,7 @@ namespace StockMarket.Client.ViewModels
 
                 if (PriceHistory.Contains(quoteViewModel)) break;
 
-                Application.Current.Dispatcher.Invoke(() => { PriceHistory.Add(quoteViewModel); });
+                _dispatcherService.Invoke(() => { PriceHistory.Add(quoteViewModel); });
             }
 
             IsLoading = false;
@@ -93,7 +104,6 @@ namespace StockMarket.Client.ViewModels
             Ticker = parameters.GetValue<string>("ticker");
             Name = parameters.GetValue<string>("name");
         }
-
-        public event Action<IDialogResult>? RequestClose;
+        #endregion
     }
 }

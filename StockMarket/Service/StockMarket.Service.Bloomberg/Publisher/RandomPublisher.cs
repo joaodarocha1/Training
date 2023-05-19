@@ -63,10 +63,12 @@ public class RandomPublisher : IRandomPublisher, IDisposable
         return (decimal)(_random.NextDouble() * (doubleMaxValue - doubleMinValue) + doubleMinValue);
     }
 
-    public void Subscribe(IEnumerable<string> enumerable)
+    public Task SubscribeAsync(IEnumerable<string> enumerable)
     {
         _timer1.Start();
         _timer2.Start();
+
+        return Task.CompletedTask;
     }
 
     public event EventHandler<RandomPublishEventArgs>? Publish;

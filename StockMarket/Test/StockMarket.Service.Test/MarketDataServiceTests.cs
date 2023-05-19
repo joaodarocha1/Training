@@ -4,26 +4,28 @@ using StockMarket.Service.Bloomberg.Publisher;
 using StockMarket.Service.Common;
 using FluentAssertions;
 using FluentAssertions.Execution;
+using Serilog;
 
 namespace StockMarket.Service.Bloomberg.Test
 {
-    public class MarketDataServiceTest
+    public class MarketDataServiceTests
     {
         private readonly MarketDataService _marketDataService;
         private readonly Mock<IRandomPublisher> _randomPublisher;
         private IEnumerable<IQuote>? _quotes;
-
-        public MarketDataServiceTest()
+        private readonly Mock<ILogger> _logger;
+        public MarketDataServiceTests()
         {
             _randomPublisher = new Mock<IRandomPublisher>();
-            _marketDataService = new MarketDataService(_randomPublisher.Object);
+            _logger = new Mock<ILogger>();
+            _marketDataService = new MarketDataService(_randomPublisher.Object, _logger.Object);
         }
 
         [Fact]
         public void Subscribe_Test()
         {
-            _marketDataService.Subscribe(new []{"STK1","STK2"});
-            _randomPublisher.Verify(v => v.Subscribe(It.IsAny<IEnumerable<string>>()), Times.Once);
+            _marketDataService.SubscribeAsync(new []{"STK1","STK2"});
+            _randomPublisher.Verify(v => v.SubscribeAsync(It.IsAny<IEnumerable<string>>()), Times.Once);
         }
 
         [Fact]
@@ -38,7 +40,7 @@ namespace StockMarket.Service.Bloomberg.Test
         [InlineData("STK2")]
         public void GetPriceHistory_Should_Return_Ticker_On_Price_History(string ticker)
         {
-            _marketDataService.Subscribe(new[] { ticker });
+            _marketDataService.SubscribeAsync(new[] { ticker });
             
             var stk1Quote = new Quote()
             {
@@ -64,7 +66,7 @@ namespace StockMarket.Service.Bloomberg.Test
         [InlineData("STK1", MovementType.Up)]
         public async Task Tick_Should_Move_In_Direction(string ticker, MovementType movementType)
         {
-            _marketDataService.Subscribe(new[] { ticker });
+            _marketDataService.SubscribeAsync(new[] { ticker });
             _marketDataService.Tick += MarketDataServiceTick;
 
             var lastPrice = 100;
@@ -115,9 +117,9 @@ namespace StockMarket.Service.Bloomberg.Test
         [InlineData("STK2", 180, 210)]
         public async Task GetPriceHistory_Price_Should_Be_On_Range(string ticker, decimal minPrice, decimal maxPrice)
         {
-            var marketDataService = new MarketDataService(new RandomPublisher());
+            var marketDataService = new MarketDataService(new RandomPublisher(), _logger.Object);
 
-            marketDataService.Subscribe(new[] { ticker });
+            marketDataService.SubscribeAsync(new[] { ticker });
 
             await Task.Delay(1000);
 

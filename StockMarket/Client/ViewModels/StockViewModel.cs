@@ -5,7 +5,7 @@ using StockMarket.Service.Common;
 
 namespace StockMarket.Client.ViewModels;
 
-internal class StockViewModel : BindableBase
+public class StockViewModel : BindableBase
 {
     private string _ticker;
     private string _name;

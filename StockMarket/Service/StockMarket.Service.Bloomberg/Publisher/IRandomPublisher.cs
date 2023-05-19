@@ -2,7 +2,7 @@
 
 public interface IRandomPublisher
 {
-    void Subscribe(IEnumerable<string> enumerable);
+    Task SubscribeAsync(IEnumerable<string> enumerable);
     event EventHandler<RandomPublishEventArgs> Publish;
     void UnSubscribe();
 }
