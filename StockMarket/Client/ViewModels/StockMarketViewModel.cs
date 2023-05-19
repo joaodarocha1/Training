@@ -77,7 +77,7 @@ namespace StockMarket.Client.ViewModels
                 { "name", SelectedStock.Name }
             };
 
-            _dialogService.ShowDialog("PriceHistoryDialog", parameters, r => { });
+            _dialogService.ShowDialog("PriceHistoryDialog", parameters, _ => { });
         }
 
         private void CommandLoadExecute()

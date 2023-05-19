@@ -7,6 +7,7 @@
         xmlns:interactivity="http://prismlibrary.com/"
         xmlns:common="clr-namespace:StockMarket.Service.Common;assembly=StockMarket.Service.Common"
         xmlns:viewModels="clr-namespace:StockMarket.Client.ViewModels"
+        xmlns:enums="clr-namespace:StockMarket.Service.Common.Enums;assembly=StockMarket.Service.Common"
         mc:Ignorable="d"
         Title="Stock Market" Height="450" Width="800">
     <Window.Resources>
@@ -42,13 +43,13 @@
 
         <Style x:Key="DataGridRowStyle" TargetType="DataGridRow">
             <Style.Triggers>
-                <DataTrigger Binding="{Binding Movement}" Value="{x:Static common:MovementType.Up}">
+                <DataTrigger Binding="{Binding Movement}" Value="{x:Static enums:MovementType.Up}">
                     <Setter Property="Background" Value="Green"/>
                 </DataTrigger>
-                <DataTrigger Binding="{Binding Movement}" Value="{x:Static common:MovementType.Down}">
+                <DataTrigger Binding="{Binding Movement}" Value="{x:Static enums:MovementType.Down}">
                     <Setter Property="Background" Value="Red"/>
                 </DataTrigger>
-                <DataTrigger Binding="{Binding Movement}" Value="{x:Static common:MovementType.None}">
+                <DataTrigger Binding="{Binding Movement}" Value="{x:Static enums:MovementType.None}">
                     <Setter Property="Background" Value="White"/>
                 </DataTrigger>
                 <DataTrigger Binding="{Binding Price, StringFormat=F2}" Value="0.00">
@@ -74,8 +75,6 @@
     </b:Interaction.Triggers>
     <Grid>
         <Grid>
-
-
             <DataGrid CanUserAddRows="False" RowStyle="{StaticResource DataGridRowStyle}" SelectionMode="Single" SelectedItem="{Binding SelectedStock}"  ItemsSource="{Binding Stocks}" AutoGenerateColumns="False">
                 <b:Interaction.Triggers>
                     <b:EventTrigger EventName="MouseDoubleClick">
