@@ -64,23 +64,15 @@ namespace StockMarket.Client.ViewModels
         {
             IsLoading = true;
             
-            var history = _marketDataService.GetPriceHistory(Ticker, DateTime.Now, DateTime.Now);
+            var history = _marketDataService.GetPriceHistory(Ticker);
 
             foreach (var quote in history.OrderByDescending(o => o.DateTime))
             {
                 var quoteViewModel = _mapper.Map<QuoteViewModel>(quote);
 
-                if (!PriceHistory.Contains(quoteViewModel))
-                {
-                    Application.Current.Dispatcher.Invoke(() =>
-                    {
-                        PriceHistory.Add(quoteViewModel);
-                    });
-                }
-                else
-                {
-                    break;
-                }
+                if (PriceHistory.Contains(quoteViewModel)) break;
+
+                Application.Current.Dispatcher.Invoke(() => { PriceHistory.Add(quoteViewModel); });
             }
 
             IsLoading = false;

@@ -2,6 +2,6 @@
 {
     public class TickEventArgs : EventArgs
     {
-        public IEnumerable<IQuote> Quotes { get; set; }
+        public IEnumerable<IQuote?> Quotes { get; set; }
     }
 }

@@ -25,7 +25,7 @@ namespace StockMarket.Client
 
         protected override Window CreateShell()
         {
-            return Container.Resolve<Views.StockMarketView>();
+            return Container.Resolve<StockMarketView>();
 
         }
 

@@ -101,13 +101,12 @@ namespace StockMarket.Client.ViewModels
 
         private void OnTick(object? sender, TickEventArgs e)
         {
-            foreach (var eQuote in e.Quotes)
+            foreach (var eQuote in e.Quotes.Where(w => w != null))
             {
                 var stock = Stocks.SingleOrDefault(s => s.Ticker == eQuote.Ticker);
 
                 if (stock == null) continue;
                 _mapper.Map(eQuote, stock);
-
             }
         }
 

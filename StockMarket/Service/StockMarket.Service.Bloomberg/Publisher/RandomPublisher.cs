@@ -5,18 +5,18 @@ namespace StockMarket.Service.Bloomberg.Publisher;
 
 public class RandomPublisher : IRandomPublisher, IDisposable
 {
-    private readonly Random _random = new Random();
-    private readonly System.Timers.Timer _timer1;
-    private readonly System.Timers.Timer _timer2;
+    private readonly Random _random = new();
+    private readonly Timer _timer1;
+    private readonly Timer _timer2;
 
-    private (string Ticker, decimal MinPrice, decimal MaxPrice, DateTime LastChange) _stk1 = (Ticker: "STK1", MinPrice: 240, MaxPrice: 270, LastChange: DateTime.Now);
-    private (string Ticker, decimal MinPrice, decimal MaxPrice, DateTime LastChange) _stk2 = (Ticker: "STK2", MinPrice: 180, MaxPrice: 210, LastChange: DateTime.Now);
+    private readonly (string Ticker, decimal MinPrice, decimal MaxPrice, DateTime LastChange) _stk1 = (Ticker: "STK1", MinPrice: 240, MaxPrice: 270, LastChange: DateTime.Now);
+    private readonly (string Ticker, decimal MinPrice, decimal MaxPrice, DateTime LastChange) _stk2 = (Ticker: "STK2", MinPrice: 180, MaxPrice: 210, LastChange: DateTime.Now);
 
 
     public RandomPublisher()
     {
-        _timer1 = new System.Timers.Timer(500);
-        _timer2 = new System.Timers.Timer(500);
+        _timer1 = new Timer(500);
+        _timer2 = new Timer(500);
         _timer1.Elapsed += Timer1Elapsed;
         _timer2.Elapsed += Timer2Elapsed;
 
@@ -33,7 +33,7 @@ public class RandomPublisher : IRandomPublisher, IDisposable
         SetRandomInterval(timer);
         
         stk.LastChange = DateTime.Now;
-        Publish.Invoke(sender, new RamdomPublishEventArgs()
+        Publish?.Invoke(sender, new RandomPublishEventArgs()
         {
             Quote = new Quote()
             {
@@ -49,10 +49,10 @@ public class RandomPublisher : IRandomPublisher, IDisposable
         PublishRandomEvent(_timer2, sender, _stk2);
     }
 
-    private void SetRandomInterval(System.Timers.Timer timer)
+    private void SetRandomInterval(Timer timer)
     {
-        var sconds = _random.Next(1, 4);
-        timer.Interval = sconds * 1000;
+        var seconds = _random.Next(1, 4);
+        timer.Interval = seconds * 1000;
     }
 
     private decimal NextDecimal(decimal minValue, decimal maxValue)
@@ -69,7 +69,7 @@ public class RandomPublisher : IRandomPublisher, IDisposable
         _timer2.Start();
     }
 
-    public event EventHandler<RamdomPublishEventArgs>? Publish;
+    public event EventHandler<RandomPublishEventArgs>? Publish;
     public void UnSubscribe()
     {
         //TODO: Unsubscribe to the publisher here

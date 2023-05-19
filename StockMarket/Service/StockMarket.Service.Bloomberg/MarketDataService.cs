@@ -1,17 +1,18 @@
 ﻿using System.Collections.Concurrent;
+using System.Diagnostics;
 using System.Timers;
 using StockMarket.Service.Bloomberg.Publisher;
 using StockMarket.Service.Common;
 
 namespace StockMarket.Service.Bloomberg;
 
-public class MarketDataService : IMarketDataService
+public class MarketDataService : IMarketDataService, IDisposable
 {
     private readonly IRandomPublisher _randomPublisher;
     private readonly System.Timers.Timer _timer;
     private readonly ConcurrentBag<Quote> _priceHistory;
-    private List<Quote> _subscribedTo;
-    public event EventHandler<TickEventArgs> Tick;
+    private readonly ConcurrentDictionary<string, Quote?> _subscribedTo = new();
+    public event EventHandler<TickEventArgs>? Tick;
 
     public MarketDataService(IRandomPublisher randomPublisher)
     {
@@ -21,71 +22,84 @@ public class MarketDataService : IMarketDataService
         _priceHistory = new ConcurrentBag<Quote>();
         _timer = new System.Timers.Timer(1000);
         _timer.Elapsed += TimerElapsed;
+
+        _timer.Start();
     }
 
-    private void OnPublish(object? sender, RamdomPublishEventArgs e)
+    private void OnPublish(object? sender, RandomPublishEventArgs e)
     {
         _priceHistory.Add(e.Quote);
     }
 
     private void TimerElapsed(object? sender, ElapsedEventArgs e)
     {
-        var random = new Random();
-
-        foreach (var ticker in _subscribedTo)
+        foreach (var subscription in _subscribedTo)
         {
-            var last = _priceHistory.OrderBy(o=>o.DateTime).LastOrDefault(w => w.Ticker == ticker.Ticker);
+            var last = _priceHistory.OrderBy(o=>o.DateTime).LastOrDefault(w => w.Ticker == subscription.Key);
 
             if (last == null) continue;
 
-            var currentPrice = last.Price;
-
-            var oldPrice = ticker.Price;
-            ticker.Price = currentPrice;
-            ticker.DateTime = last.DateTime;
-
-            if (oldPrice == currentPrice)
+            if (subscription.Value == null)
             {
-                ticker.Movement = MovementType.None;
-                continue;
-            }
+                _subscribedTo[subscription.Key] = new Quote()
+                {
+                    Price = last.Price,
+                    Ticker = subscription.Key,
+                    DateTime = last.DateTime,
+                    Movement = MovementType.None
+                };
 
-            if (oldPrice > currentPrice)
+                return;
+            }
+            
+            var oldPrice = subscription.Value.Price;
+            
+            subscription.Value.Price = last.Price;
+            subscription.Value.DateTime = last.DateTime;
+
+            subscription.Value.Movement = oldPrice switch
             {
-                ticker.Movement = MovementType.Up;
-                continue;
-            }
+                _ when oldPrice == last.Price => MovementType.None,
+                _ when oldPrice < last.Price => MovementType.Up,
+                _ when oldPrice > last.Price => MovementType.Down,
+                _ => throw new InvalidOperationException("Unexpected condition") 
+            };
 
-            if (oldPrice >= currentPrice) continue;
-
-            ticker.Movement = MovementType.Down;
         }
 
         Tick?.Invoke(sender, new TickEventArgs()
         {
-            Quotes = _subscribedTo
+            Quotes = _subscribedTo.Values
         });
     }
 
     public void Subscribe(IEnumerable<string> tickers)
     {
-        _subscribedTo = tickers.Select(s => new Quote() { Ticker = s }).ToList();
-
+        foreach (var ticker in tickers)
+        {
+            _subscribedTo[ticker] = null;
+        }
+        
         _randomPublisher.Subscribe(tickers);
-
-        _timer.Start();
     }
 
     public void Unsubscribe()
     {
-        _timer.Stop();
         _randomPublisher.Publish -= OnPublish;
         _timer.Elapsed -= TimerElapsed;
         _randomPublisher.UnSubscribe();
     }
 
-    public IEnumerable<IQuote> GetPriceHistory(string ticker, DateTime startDateTime, DateTime endDateTime)
+    public IEnumerable<IQuote> GetPriceHistory(string ticker)
     {
         return _priceHistory.Where(w => w.Ticker == ticker).ToList();
+    }
+
+    public void Dispose()
+    {
+        _timer.Dispose();
+        _randomPublisher.Publish -= OnPublish;
+        _timer.Elapsed -= TimerElapsed;
+        _randomPublisher.UnSubscribe();
     }
 }
