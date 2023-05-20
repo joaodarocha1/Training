@@ -1,13 +1,9 @@
 using System.Collections.ObjectModel;
 using FluentAssertions;
 using FluentAssertions.Execution;
-using Moq;
 using Prism.Services.Dialogs;
-using StockMarket.Client.Utils;
 using StockMarket.Client.ViewModels;
 using StockMarket.Service;
-using StockMarket.Service.Bloomberg;
-using StockMarket.Service.Bloomberg.Publisher;
 using StockMarket.Service.Enums;
 using StockMarket.Service.Event;
 

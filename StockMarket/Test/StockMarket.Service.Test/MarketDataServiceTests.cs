@@ -119,7 +119,7 @@ namespace StockMarket.Service.Bloomberg.Test
         [InlineData("STK2", 180, 210)]
         public async Task GetPriceHistory_Price_Should_Be_On_Range(string ticker, decimal minPrice, decimal maxPrice)
         {
-            var marketDataService = new MarketDataService(new RandomPublisher(), _logger.Object);
+            var marketDataService = new MarketDataService(new RandomMarketDataPublisher(), _logger.Object);
 
             marketDataService.SubscribeAsync(new[] { ticker });
 

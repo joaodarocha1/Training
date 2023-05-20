@@ -1,7 +1,6 @@
 using AutoMapper;
 using Moq;
 using Serilog;
-using StockMarket.Service.Bloomberg.Publisher;
 using StockMarket.Service.Bloomberg;
 using StockMarket.Client.Utils;
 using StockMarket.Service.Publisher;

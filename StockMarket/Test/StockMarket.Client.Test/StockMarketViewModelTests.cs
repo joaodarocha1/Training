@@ -3,8 +3,6 @@ using FluentAssertions.Execution;
 using Prism.Services.Dialogs;
 using Prism.Unity;
 using StockMarket.Client.ViewModels;
-using StockMarket.Service.Bloomberg.Publisher;
-using System.Collections.ObjectModel;
 using StockMarket.Service;
 using StockMarket.Service.Enums;
 using StockMarket.Service.Event;

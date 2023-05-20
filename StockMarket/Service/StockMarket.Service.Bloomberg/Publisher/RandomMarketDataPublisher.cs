@@ -1,11 +1,10 @@
-﻿using StockMarket.Service;
-using StockMarket.Service.Event;
+﻿using StockMarket.Service.Event;
 using StockMarket.Service.Publisher;
 using Timer = System.Timers.Timer;
 
 namespace StockMarket.Service.Bloomberg.Publisher;
 
-public class RandomPublisher : IPublisher, IDisposable
+public class RandomMarketDataPublisher : IPublisher, IDisposable
 {
     private readonly Random _random = new();
     private readonly Timer _timer1;
@@ -15,7 +14,7 @@ public class RandomPublisher : IPublisher, IDisposable
     private readonly (string Ticker, decimal MinPrice, decimal MaxPrice, DateTime LastChange) _stk2 = (Ticker: "STK2", MinPrice: 180, MaxPrice: 210, LastChange: DateTime.Now);
 
 
-    public RandomPublisher()
+    public RandomMarketDataPublisher()
     {
         _timer1 = new Timer(300);
         _timer2 = new Timer(500);

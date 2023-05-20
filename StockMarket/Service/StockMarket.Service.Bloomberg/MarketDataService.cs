@@ -1,10 +1,6 @@
 ﻿using System.Collections.Concurrent;
-using System.Diagnostics;
 using System.Timers;
 using Serilog;
-using Serilog.Core;
-using StockMarket.Service.Bloomberg.Publisher;
-using StockMarket.Service;
 using StockMarket.Service.Enums;
 using StockMarket.Service.Event;
 using StockMarket.Service.Publisher;

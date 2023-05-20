@@ -1,15 +1,12 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using AutoMapper;
 using Prism.Ioc;
 using Prism.Unity;
 using Serilog;
-using Serilog.Core;
 using StockMarket.Client.Control;
 using StockMarket.Client.Utils;
 using StockMarket.Client.ViewModels;
 using StockMarket.Client.Views;
-using StockMarket.Service;
 using StockMarket.Service.Bloomberg;
 using StockMarket.Service.Bloomberg.Publisher;
 using StockMarket.Service.Publisher;
@@ -41,7 +38,7 @@ namespace StockMarket.Client
         private static void RegisterServices(IContainerRegistry containerRegistry)
         {
             containerRegistry.RegisterScoped<IMarketDataService, MarketDataService>();
-            containerRegistry.Register<IPublisher, RandomPublisher>();
+            containerRegistry.Register<IPublisher, RandomMarketDataPublisher>();
             containerRegistry.Register<IDispatcherService, DispatcherService>();
         }
 
