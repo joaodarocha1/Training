@@ -5,9 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:interactivity="http://prismlibrary.com/"
-        xmlns:common="clr-namespace:StockMarket.Service.Common;assembly=StockMarket.Service.Common"
         xmlns:viewModels="clr-namespace:StockMarket.Client.ViewModels"
-        xmlns:enums="clr-namespace:StockMarket.Service.Common.Enums;assembly=StockMarket.Service.Common"
+        xmlns:enums="clr-namespace:StockMarket.Service.Enums;assembly=StockMarket.Service"
         mc:Ignorable="d"
         Title="Stock Market" Height="450" Width="800">
     <Window.Resources>

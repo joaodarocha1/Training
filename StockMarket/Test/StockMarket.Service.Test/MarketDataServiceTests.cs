@@ -1,24 +1,24 @@
 using System.Diagnostics;
 using Moq;
 using StockMarket.Service.Bloomberg.Publisher;
-using StockMarket.Service.Common;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Serilog;
-using StockMarket.Service.Common.Event;
-using StockMarket.Service.Common.Enums;
+using StockMarket.Service.Enums;
+using StockMarket.Service.Event;
+using StockMarket.Service.Publisher;
 
 namespace StockMarket.Service.Bloomberg.Test
 {
     public class MarketDataServiceTests
     {
         private readonly MarketDataService _marketDataService;
-        private readonly Mock<IRandomPublisher> _randomPublisher;
+        private readonly Mock<IPublisher> _randomPublisher;
         private IEnumerable<IQuote>? _quotes;
         private readonly Mock<ILogger> _logger;
         public MarketDataServiceTests()
         {
-            _randomPublisher = new Mock<IRandomPublisher>();
+            _randomPublisher = new Mock<IPublisher>();
             _logger = new Mock<ILogger>();
             _marketDataService = new MarketDataService(_randomPublisher.Object, _logger.Object);
         }
@@ -50,7 +50,7 @@ namespace StockMarket.Service.Bloomberg.Test
                 Ticker = ticker
             };
 
-            _randomPublisher.Raise(p => p.Publish += null, this, new RandomPublishEventArgs() { Quote = stk1Quote });
+            _randomPublisher.Raise(p => p.Publish += null, this, new PublishEventArgs() { Quote = stk1Quote });
 
             var result = _marketDataService.GetPriceHistory(ticker);
 
@@ -80,7 +80,7 @@ namespace StockMarket.Service.Bloomberg.Test
                 Ticker = ticker
             };
 
-            _randomPublisher.Raise(p => p.Publish += null, this, new RandomPublishEventArgs() { Quote = stk1Quote });
+            _randomPublisher.Raise(p => p.Publish += null, this, new PublishEventArgs() { Quote = stk1Quote });
 
             var delay = 200;
 
@@ -98,7 +98,7 @@ namespace StockMarket.Service.Bloomberg.Test
                     Ticker = ticker
                 };
 
-                _randomPublisher.Raise(p => p.Publish += null, this, new RandomPublishEventArgs() { Quote = stk1Quote2 });
+                _randomPublisher.Raise(p => p.Publish += null, this, new PublishEventArgs() { Quote = stk1Quote2 });
 
                 await Task.Delay(500);
                 delay += 500;

@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using StockMarket.Client.ViewModels;
-using StockMarket.Service.Common;
+using StockMarket.Service;
 
 namespace StockMarket.Client;
 

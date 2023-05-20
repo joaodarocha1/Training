@@ -8,8 +8,8 @@ using System.Linq;
 using System.Windows.Data;
 using Serilog;
 using StockMarket.Client.Utils;
-using StockMarket.Service.Common.Event;
-using StockMarket.Service.Common.Services;
+using StockMarket.Service.Event;
+using StockMarket.Service.Services;
 
 namespace StockMarket.Client.ViewModels
 {

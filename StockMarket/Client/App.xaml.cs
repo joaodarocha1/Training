@@ -12,7 +12,8 @@ using StockMarket.Client.Views;
 using StockMarket.Service;
 using StockMarket.Service.Bloomberg;
 using StockMarket.Service.Bloomberg.Publisher;
-using StockMarket.Service.Common.Services;
+using StockMarket.Service.Publisher;
+using StockMarket.Service.Services;
 using Unity;
 
 namespace StockMarket.Client
@@ -27,7 +28,6 @@ namespace StockMarket.Client
         protected override Window CreateShell()
         {
             return Container.Resolve<StockMarketView>();
-
         }
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
@@ -41,7 +41,7 @@ namespace StockMarket.Client
         private static void RegisterServices(IContainerRegistry containerRegistry)
         {
             containerRegistry.RegisterScoped<IMarketDataService, MarketDataService>();
-            containerRegistry.Register<IRandomPublisher, RandomPublisher>();
+            containerRegistry.Register<IPublisher, RandomPublisher>();
             containerRegistry.Register<IDispatcherService, DispatcherService>();
         }
 

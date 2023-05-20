@@ -1,9 +1,11 @@
-﻿using StockMarket.Service.Common;
+﻿using StockMarket.Service;
+using StockMarket.Service.Event;
+using StockMarket.Service.Publisher;
 using Timer = System.Timers.Timer;
 
 namespace StockMarket.Service.Bloomberg.Publisher;
 
-public class RandomPublisher : IRandomPublisher, IDisposable
+public class RandomPublisher : IPublisher, IDisposable
 {
     private readonly Random _random = new();
     private readonly Timer _timer1;
@@ -15,7 +17,7 @@ public class RandomPublisher : IRandomPublisher, IDisposable
 
     public RandomPublisher()
     {
-        _timer1 = new Timer(500);
+        _timer1 = new Timer(300);
         _timer2 = new Timer(500);
         _timer1.Elapsed += Timer1Elapsed;
         _timer2.Elapsed += Timer2Elapsed;
@@ -33,7 +35,7 @@ public class RandomPublisher : IRandomPublisher, IDisposable
         SetRandomInterval(timer);
         
         stk.LastChange = DateTime.Now;
-        Publish?.Invoke(sender, new RandomPublishEventArgs()
+        Publish?.Invoke(sender, new PublishEventArgs()
         {
             Quote = new Quote()
             {
@@ -71,7 +73,7 @@ public class RandomPublisher : IRandomPublisher, IDisposable
         return Task.CompletedTask;
     }
 
-    public event EventHandler<RandomPublishEventArgs>? Publish;
+    public event EventHandler<PublishEventArgs>? Publish;
     public void UnSubscribe()
     {
         //TODO: Unsubscribe to the publisher here

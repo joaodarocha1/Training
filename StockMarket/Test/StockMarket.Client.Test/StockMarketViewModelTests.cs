@@ -4,9 +4,10 @@ using Prism.Services.Dialogs;
 using Prism.Unity;
 using StockMarket.Client.ViewModels;
 using StockMarket.Service.Bloomberg.Publisher;
-using StockMarket.Service.Common;
-using StockMarket.Service.Common.Enums;
 using System.Collections.ObjectModel;
+using StockMarket.Service;
+using StockMarket.Service.Enums;
+using StockMarket.Service.Event;
 
 namespace StockMarket.Client.Test;
 
@@ -50,7 +51,7 @@ public class StockMarketViewModelTests : BaseViewModelTests
         await Task.Delay(3000);
         
         var quote = new Quote { DateTime = DateTime.Now, Price = 100, Ticker = viewModelTicker, Movement = MovementType.None };
-        Publisher.Raise(p => p.Publish += null, this, new RandomPublishEventArgs() { Quote = quote });
+        Publisher.Raise(p => p.Publish += null, this, new PublishEventArgs() { Quote = quote });
 
         await Task.Delay(1500);
 

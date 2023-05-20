@@ -7,13 +7,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StockMarket.Client", "Clien
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StockMarket.Service.Bloomberg", "Service\StockMarket.Service.Bloomberg\StockMarket.Service.Bloomberg.csproj", "{213BACF9-0CDB-411A-8A18-E5ECD2C34DED}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StockMarket.Service.Common", "Service\StockMarket.Service.Common\StockMarket.Service.Common.csproj", "{5C91012E-24E7-43B4-A8C2-BE1972499DAC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StockMarket.Service", "Service\StockMarket.Service.Common\StockMarket.Service.csproj", "{5C91012E-24E7-43B4-A8C2-BE1972499DAC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{B64B28EF-75E1-46E5-BF92-D1493F95F268}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockMarket.Client.Test", "Test\StockMarket.Client.Test\StockMarket.Client.Test.csproj", "{76341082-D46D-41A6-8E58-26C9B321F35B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StockMarket.Client.Test", "Test\StockMarket.Client.Test\StockMarket.Client.Test.csproj", "{76341082-D46D-41A6-8E58-26C9B321F35B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockMarket.Service.Bloomberg.Test", "Test\StockMarket.Service.Test\StockMarket.Service.Bloomberg.Test.csproj", "{5A2FD198-A50E-4273-B039-71529E64E541}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StockMarket.Service.Bloomberg.Test", "Test\StockMarket.Service.Test\StockMarket.Service.Bloomberg.Test.csproj", "{5A2FD198-A50E-4273-B039-71529E64E541}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

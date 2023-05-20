@@ -22,7 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Service\StockMarket.Service.Bloomberg\StockMarket.Service.Bloomberg.csproj" />
-    <ProjectReference Include="..\Service\StockMarket.Service.Common\StockMarket.Service.Common.csproj" />
+    <ProjectReference Include="..\Service\StockMarket.Service.Common\StockMarket.Service.csproj" />
   </ItemGroup>
 
 </Project>

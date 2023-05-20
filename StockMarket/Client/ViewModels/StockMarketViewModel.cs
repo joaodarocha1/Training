@@ -8,9 +8,9 @@ using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
 using Serilog;
-using StockMarket.Service.Common;
-using StockMarket.Service.Common.Event;
-using StockMarket.Service.Common.Services;
+using StockMarket.Service;
+using StockMarket.Service.Event;
+using StockMarket.Service.Services;
 
 namespace StockMarket.Client.ViewModels
 {
@@ -26,7 +26,7 @@ namespace StockMarket.Client.ViewModels
         private DelegateCommand? _loadCommand;
         private DelegateCommand? _showPriceHistoryCommand;
         private bool _isLoading;
-        private StockViewModel _selectedStock;
+        private StockViewModel? _selectedStock;
 
         #endregion
 
@@ -56,7 +56,7 @@ namespace StockMarket.Client.ViewModels
             set => SetProperty(ref _isLoading, value);
         }
 
-        public StockViewModel SelectedStock
+        public StockViewModel? SelectedStock
         {
             get => _selectedStock;
             set => SetProperty(ref _selectedStock, value);

@@ -4,23 +4,24 @@ using System.Timers;
 using Serilog;
 using Serilog.Core;
 using StockMarket.Service.Bloomberg.Publisher;
-using StockMarket.Service.Common;
-using StockMarket.Service.Common.Enums;
-using StockMarket.Service.Common.Event;
-using StockMarket.Service.Common.Services;
+using StockMarket.Service;
+using StockMarket.Service.Enums;
+using StockMarket.Service.Event;
+using StockMarket.Service.Publisher;
+using StockMarket.Service.Services;
 
 namespace StockMarket.Service.Bloomberg;
 
 public class MarketDataService : IMarketDataService, IDisposable
 {
-    private readonly IRandomPublisher _randomPublisher;
+    private readonly IPublisher _randomPublisher;
     private readonly ILogger _logger;
     private readonly System.Timers.Timer _timer;
-    private readonly ConcurrentBag<Quote> _priceHistory;
+    private readonly ConcurrentBag<IQuote> _priceHistory;
     private readonly ConcurrentDictionary<string, Quote?> _subscribedTo = new();
     public event EventHandler<TickEventArgs>? Tick;
 
-    public MarketDataService(IRandomPublisher randomPublisher, ILogger logger)
+    public MarketDataService(IPublisher randomPublisher, ILogger logger)
     {
         _logger = logger;
 
@@ -29,7 +30,7 @@ public class MarketDataService : IMarketDataService, IDisposable
         _randomPublisher = randomPublisher;
         _randomPublisher.Publish += OnPublish;
 
-        _priceHistory = new ConcurrentBag<Quote>();
+        _priceHistory = new ConcurrentBag<IQuote>();
         _timer = new System.Timers.Timer(1000);
         _timer.Elapsed += TimerElapsed;
 
@@ -38,7 +39,7 @@ public class MarketDataService : IMarketDataService, IDisposable
         _logger.Information("MarkedDataService Initialization completed");
     }
 
-    private void OnPublish(object? sender, RandomPublishEventArgs e)
+    private void OnPublish(object? sender, PublishEventArgs e)
     {
         _logger.Debug($"MarketDataService.OnPublish: Ticker: {e.Quote.Ticker}, Price: {e.Quote.Price}");
         _priceHistory.Add(e.Quote);
