@@ -95,7 +95,7 @@ namespace StockMarket.Client.ViewModels
         private void CommandLoadExecute()
         {
             Stocks.Clear();
-            LoadStocksAsync();
+            Load();
         }
 
         private void CommandUnloadExecute()
@@ -108,15 +108,14 @@ namespace StockMarket.Client.ViewModels
 
         #region Methods
 
-        private async void LoadStocksAsync()
+        private void Load()
         {
             try
             {
                 IsLoading = true;
 
-                var portFolio = await GetPortfolioAsync();
-
-                await _marketDataServices.SubscribeAsync(portFolio.Select(s => s.Ticker));
+                var portFolio = Task.Run(async () => await GetPortfolioAsync()).Result;
+                Task.Run(async () => await _marketDataServices.SubscribeAsync(portFolio.Select(s => s.Ticker)));
 
                 foreach (var stockItem in portFolio)
                 {

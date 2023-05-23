@@ -66,6 +66,8 @@ public class RandomMarketDataPublisher : IPublisher
 
     public Task SubscribeAsync(IEnumerable<string> enumerable)
     {
+        Task.Delay(600);
+
         _timer1.Start();
         _timer2.Start();
 
