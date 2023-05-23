@@ -4,7 +4,7 @@ using Timer = System.Timers.Timer;
 
 namespace StockMarket.Service.Bloomberg.Publisher;
 
-public class RandomMarketDataPublisher : IPublisher, IDisposable
+public class RandomMarketDataPublisher : IPublisher
 {
     private readonly Random _random = new();
     private readonly Timer _timer1;
@@ -74,11 +74,6 @@ public class RandomMarketDataPublisher : IPublisher, IDisposable
 
     public event EventHandler<PublishEventArgs>? Publish;
     public void UnSubscribe()
-    {
-        //TODO: Unsubscribe to the publisher here
-    }
-
-    public void Dispose()
     {
         _timer1.Stop();
         _timer2.Stop();

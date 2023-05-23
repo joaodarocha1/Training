@@ -35,19 +35,19 @@ namespace StockMarket.Client
             RegisterLogger(containerRegistry);
         }
 
-        private static void RegisterServices(IContainerRegistry containerRegistry)
+        private void RegisterServices(IContainerRegistry containerRegistry)
         {
-            containerRegistry.RegisterScoped<IMarketDataService, MarketDataService>();
+            containerRegistry.RegisterSingleton<IMarketDataService, MarketDataService>();
             containerRegistry.Register<IPublisher, RandomMarketDataPublisher>();
             containerRegistry.Register<IDispatcherService, DispatcherService>();
         }
 
-        private static void RegisterDialogs(IContainerRegistry containerRegistry)
+        private void RegisterDialogs(IContainerRegistry containerRegistry)
         {
             containerRegistry.RegisterDialog<PriceHistoryDialog, PriceHistoryViewModel>();
         }
 
-        private static void RegisterLogger(IContainerRegistry containerRegistry)
+        private void RegisterLogger(IContainerRegistry containerRegistry)
         {
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug() 
@@ -60,7 +60,7 @@ namespace StockMarket.Client
             _logger = containerRegistry.GetContainer().Resolve<ILogger>();
         }
 
-        private static void RegisterMapper(IContainerRegistry containerRegistry)
+        private void RegisterMapper(IContainerRegistry containerRegistry)
         {
             var configuration = new MapperConfiguration(cfg => { cfg.AddProfile<MappingProfile>(); });
 
@@ -74,6 +74,7 @@ namespace StockMarket.Client
             Log.CloseAndFlush();
             base.OnExit(e);
         }
+        
 
         protected override void OnStartup(StartupEventArgs e)
         {

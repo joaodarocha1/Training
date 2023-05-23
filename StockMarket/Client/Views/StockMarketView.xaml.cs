@@ -13,12 +13,5 @@ namespace StockMarket.Client.Views
         {
             InitializeComponent();
         }
-
-        protected override void OnClosing(CancelEventArgs e)
-        {
-            base.OnClosing(e);
-            var viewModel = (IDisposable)DataContext;
-            viewModel.Dispose();
-        }
     }
 }

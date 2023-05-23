@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using AutoMapper;
 using Prism.Commands;
 using Prism.Mvvm;
@@ -14,7 +15,7 @@ using StockMarket.Service.Services;
 
 namespace StockMarket.Client.ViewModels
 {
-    public class StockMarketViewModel : BindableBase, IDisposable
+    public class StockMarketViewModel : BindableBase
     {
         #region Fields
 
@@ -24,6 +25,7 @@ namespace StockMarket.Client.ViewModels
         private readonly ILogger _logger;
 
         private DelegateCommand? _loadCommand;
+        private DelegateCommand? _unloadCommand;
         private DelegateCommand? _showPriceHistoryCommand;
         private bool _isLoading;
         private StockViewModel? _selectedStock;
@@ -67,6 +69,9 @@ namespace StockMarket.Client.ViewModels
         public DelegateCommand LoadCommand =>
             _loadCommand ??= new DelegateCommand(CommandLoadExecute);
 
+        public DelegateCommand UnLoadCommand =>
+            _unloadCommand ??= new DelegateCommand(CommandUnloadExecute);
+
         public DelegateCommand ShowPriceHistoryCommand =>
             _showPriceHistoryCommand ??= new DelegateCommand(ShowPriceHistoryExecute);
 
@@ -93,6 +98,12 @@ namespace StockMarket.Client.ViewModels
             LoadStocksAsync();
         }
 
+        private void CommandUnloadExecute()
+        {
+            _marketDataServices.Tick -= OnTick;
+            _marketDataServices.Unsubscribe();
+        }
+
         #endregion
 
         #region Methods
@@ -116,7 +127,8 @@ namespace StockMarket.Client.ViewModels
             }
             catch (Exception e)
             {
-                _logger.Error("Error while Loading Stocks", e);
+                _logger.Error("StockMarketViewModel.LoadStocksAsync", e);
+                MessageBox.Show("Error while Loading Stocks.", e.Message);
                 IsLoading = false;
                 throw;
             }
@@ -152,16 +164,6 @@ namespace StockMarket.Client.ViewModels
                 _logger.Error("Error while refreshing prices", exception);
                 throw;
             }
-        }
-
-        #endregion
-
-        #region Dispose
-
-        public void Dispose()
-        {
-            _marketDataServices.Tick -= OnTick;
-            _marketDataServices.Unsubscribe();
         }
 
         #endregion

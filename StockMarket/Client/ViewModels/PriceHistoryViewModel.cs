@@ -10,6 +10,7 @@ using Serilog;
 using StockMarket.Client.Utils;
 using StockMarket.Service.Event;
 using StockMarket.Service.Services;
+using System.Windows;
 
 namespace StockMarket.Client.ViewModels
 {
@@ -101,6 +102,7 @@ namespace StockMarket.Client.ViewModels
             {
                 _logger.Error("PriceHistoryViewModel.OnMarketDataTick", exception);
                 IsLoading = false;
+                MessageBox.Show("Error while receiving market data.",exception.Message);
                 throw;
             }
 

@@ -8,7 +8,7 @@ using StockMarket.Service.Services;
 
 namespace StockMarket.Service.Bloomberg;
 
-public class MarketDataService : IMarketDataService, IDisposable
+public class MarketDataService : IMarketDataService
 {
     private readonly IPublisher _randomPublisher;
     private readonly ILogger _logger;
@@ -45,7 +45,7 @@ public class MarketDataService : IMarketDataService, IDisposable
     {
         foreach (var subscription in _subscribedTo)
         {
-            var last = _priceHistory.OrderBy(o=>o.DateTime).LastOrDefault(w => w.Ticker == subscription.Key);
+            var last = _priceHistory.OrderBy(o => o.DateTime).LastOrDefault(w => w.Ticker == subscription.Key);
 
             if (last == null) continue;
 
@@ -102,7 +102,7 @@ public class MarketDataService : IMarketDataService, IDisposable
             _logger.Error($"Error while subscribing to: {string.Join(",", tickers)}", ex);
             throw;
         }
-        
+
         _logger.Information($"Successfully subscribed to: {string.Join(",", tickers)}");
     }
 
@@ -116,13 +116,5 @@ public class MarketDataService : IMarketDataService, IDisposable
     public IEnumerable<IQuote> GetPriceHistory(string ticker)
     {
         return _priceHistory.Where(w => w.Ticker == ticker).ToList();
-    }
-
-    public void Dispose()
-    {
-        _timer.Dispose();
-        _randomPublisher.Publish -= OnPublish;
-        _timer.Elapsed -= TimerElapsed;
-        _randomPublisher.UnSubscribe();
     }
 }

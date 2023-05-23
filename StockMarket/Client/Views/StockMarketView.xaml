@@ -71,6 +71,9 @@
         <b:EventTrigger EventName="Loaded">
             <interactivity:InvokeCommandAction Command="{Binding LoadCommand}"/>
         </b:EventTrigger>
+        <b:EventTrigger EventName="Closing">
+            <interactivity:InvokeCommandAction Command="{Binding UnLoadCommand}"/>
+        </b:EventTrigger>
     </b:Interaction.Triggers>
     <Grid>
         <Grid>
